@@ -40,31 +40,6 @@
   --t-hero: clamp(2.9rem, 8vw, 5.6rem);
 
   /* hero scene colours, read by the canvas */
-  --sc-sky-top: #78c9ee;
-  --sc-sky-bot: #eaf8fd;
-  --sc-sun: #ffd24a;
-  --sc-sun-glow: rgba(255, 214, 90, .5);
-  --sc-lawn: #86c880;
-  --sc-lawn-dark: #5eae66;
-  --sc-tree: #3f8f55;
-  --sc-tree2: #54a766;
-  --sc-water-base: #0d639f;
-  --sc-water-top: rgba(52, 176, 232, .62);
-  --sc-water-bot: rgba(8, 82, 146, .82);
-  --sc-deck: #e9e2d3;
-  --sc-deck-edge: #fbf7ee;
-  --sc-post: #c6d1d8;
-  --sc-board: #f7fafb;
-  --sc-tile: #a9dcef;
-  --sc-foam: #ffffff;
-  --sc-outline: rgba(11, 44, 71, .55);
-  --sc-skin: #f0b48c;
-  --sc-skin-far: #d99a74;
-  --sc-short: #ff5d48;
-  --sc-cap: #ffb81c;
-  --sc-coral: #ff5d48;
-  --sc-yellow: #ffb81c;
-  --sc-white: #ffffff;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -79,23 +54,6 @@
     --board: #04121f;
     --board-text: #e7f4fa;
     --board-muted: #8db1c6;
-    --sc-sky-top: #0b2540;
-    --sc-sky-bot: #2d6a98;
-    --sc-sun: #ffe29a;
-    --sc-sun-glow: rgba(255, 226, 154, .35);
-    --sc-lawn: #2f6c4b;
-    --sc-lawn-dark: #265a3f;
-    --sc-tree: #1f4d3a;
-    --sc-tree2: #285d46;
-    --sc-water-base: #06304c;
-    --sc-water-top: rgba(34, 124, 184, .58);
-    --sc-water-bot: rgba(4, 40, 78, .88);
-    --sc-deck: #56626e;
-    --sc-deck-edge: #8a97a3;
-    --sc-post: #7d8a96;
-    --sc-board: #dbe7ee;
-    --sc-tile: #2a7ba6;
-    --sc-outline: rgba(2, 12, 22, .7);
   }
 }
 :root[data-theme="dark"] {
@@ -110,23 +68,6 @@
   --board: #04121f;
   --board-text: #e7f4fa;
   --board-muted: #8db1c6;
-  --sc-sky-top: #0b2540;
-  --sc-sky-bot: #2d6a98;
-  --sc-sun: #ffe29a;
-  --sc-sun-glow: rgba(255, 226, 154, .35);
-  --sc-lawn: #2f6c4b;
-  --sc-lawn-dark: #265a3f;
-  --sc-tree: #1f4d3a;
-  --sc-tree2: #285d46;
-  --sc-water-base: #06304c;
-  --sc-water-top: rgba(34, 124, 184, .58);
-  --sc-water-bot: rgba(4, 40, 78, .88);
-  --sc-deck: #56626e;
-  --sc-deck-edge: #8a97a3;
-  --sc-post: #7d8a96;
-  --sc-board: #dbe7ee;
-  --sc-tile: #2a7ba6;
-  --sc-outline: rgba(2, 12, 22, .7);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -184,31 +125,79 @@ p { margin: 0 0 1em; }
 .btn-line:hover { background: color-mix(in srgb, var(--text) 8%, transparent); }
 .btn-sm { padding: 8px 16px; }
 
-/* ---------- hero ---------- */
-.hero { position: relative; overflow: hidden; background: var(--sc-sky-top); isolation: isolate; }
-.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; cursor: pointer; }
-.hero-inner { position: relative; z-index: 1; pointer-events: none; padding-top: clamp(36px, 6vw, 72px); padding-bottom: clamp(300px, 36vw, 440px); }
-.hero-inner a, .hero-inner button { pointer-events: auto; }
-@media (min-width: 900px) {
-  /* text left, dive right: the scene shares the sky with the headline */
-  .hero-inner { padding-bottom: 230px; }
+/* ---------- hero: real photo, moving water, rising waterline ---------- */
+:root { --nav-h: 65px; }
+.hero { position: relative; height: calc(max(100svh - var(--nav-h), 540px) + 75vh); --p: 0; }
+.hero-stick {
+  position: sticky; top: var(--nav-h);
+  height: calc(100svh - var(--nav-h)); min-height: 540px;
+  overflow: hidden; background: #0b2c47; isolation: isolate;
 }
-@media (max-width: 480px) { .brand-sub { display: none; } }
-.eyebrow { font-weight: 700; font-size: var(--t-sm); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px; display: inline-flex; align-items: center; gap: 10px; }
-.eyebrow::before { content: ""; width: 28px; height: 3px; background: var(--sun); border-radius: 2px; }
-.hero h1 { font-weight: 900; font-size: var(--t-hero); letter-spacing: -.03em; margin-bottom: 18px; }
-.lead { font-size: clamp(1.0625rem, 2vw, 1.3rem); max-width: 34ch; margin-bottom: 26px; }
+.hero-photo, .hero-stick canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero-photo { object-fit: cover; object-position: 55% 55%; }
+.hero-stick canvas { z-index: 1; pointer-events: none; }
+#water { opacity: 0; transition: opacity .6s ease; }
+#water.ready { opacity: 1; }
+#drops { z-index: 2; }
+.hero-shade {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(180deg, rgba(4, 24, 42, .3) 0%, rgba(4, 24, 42, 0) 24%, rgba(4, 24, 42, 0) 46%, rgba(4, 24, 42, .8) 100%);
+}
+.hero-copy {
+  position: absolute; z-index: 4; left: 0; right: 0; bottom: 0;
+  padding-bottom: clamp(28px, 6vh, 64px); color: #fff; pointer-events: none;
+  opacity: calc(1 - var(--p) * 1.8); transform: translateY(calc(var(--p) * -48px));
+}
+.hero-copy a { pointer-events: auto; }
+.hero-copy .eyebrow { margin-bottom: 14px; }
+.hero h1 { font-weight: 900; font-size: clamp(2.5rem, 7vw, 5.4rem); letter-spacing: -.03em; margin-bottom: 16px; text-shadow: 0 2px 28px rgba(2, 18, 32, .4); }
+.lead { font-size: clamp(1.0625rem, 2vw, 1.3rem); max-width: 36ch; margin-bottom: 24px; text-shadow: 0 1px 14px rgba(2, 18, 32, .45); }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; }
-.replay {
-  position: absolute; z-index: 2; left: max(16px, 4vw); bottom: 18px;
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--surface); color: var(--text); border: 1px solid var(--line);
-  font: 700 var(--t-sm)/1 var(--font-body); padding: 11px 16px; border-radius: 999px; cursor: pointer;
-  box-shadow: 0 2px 10px rgba(4, 30, 52, .25);
-  transition: transform .15s ease, opacity .2s ease;
+.btn-ghost { border-color: #fff; color: #fff; background: rgba(255, 255, 255, .06); }
+.btn-ghost:hover { background: rgba(255, 255, 255, .18); }
+.eyebrow { font-weight: 700; font-size: var(--t-sm); letter-spacing: .08em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: ""; width: 28px; height: 3px; background: var(--sun); border-radius: 2px; }
+
+.hint {
+  position: absolute; z-index: 4; left: 50%; top: 44%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px; pointer-events: none;
+  background: rgba(255, 255, 255, .9); color: #0b2c47; padding: 9px 16px; border-radius: 999px;
+  font: 700 var(--t-sm)/1 var(--font-body); box-shadow: 0 2px 14px rgba(4, 30, 52, .25);
+  opacity: calc(1 - var(--p) * 6); transition: opacity .5s ease;
 }
-.replay:hover { transform: translateY(-2px); }
-.replay[aria-disabled="true"] { opacity: .55; cursor: default; transform: none; }
+.hint.gone { opacity: 0; }
+.hint i { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #0f8fd6; animation: ping 1.8s ease-out infinite; }
+@keyframes ping { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(1.7); opacity: 0; } }
+
+/* the waterline that rises while you scroll */
+.tide {
+  position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; height: 100%; pointer-events: none;
+  transform: translateY(calc((1 - var(--p)) * (100% + 56px)));
+  background: linear-gradient(180deg, #1aa8e8 0%, #0f8fd6 14%, #0a5f9c 50%, var(--board) 100%);
+  will-change: transform;
+}
+.tide::before, .tide::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 48px; background-repeat: repeat-x; background-size: 1200px 48px;
+}
+.tide::after {
+  top: -47px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 48'%3E%3Cpath d='M0 26C100 6 200 6 300 26S500 46 600 26 800 6 900 26 1100 46 1200 26V48H0Z' fill='%231aa8e8'/%3E%3Cpath d='M0 26C100 6 200 6 300 26S500 46 600 26 800 6 900 26 1100 46 1200 26' fill='none' stroke='%23ffffff' stroke-opacity='.85' stroke-width='2.5'/%3E%3C/svg%3E");
+  animation: drift 9s linear infinite;
+}
+.tide::before {
+  top: -55px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 48'%3E%3Cpath d='M0 22C100 42 200 42 300 22S500 2 600 22 800 42 900 22 1100 2 1200 22V48H0Z' fill='%23ffffff' fill-opacity='.35'/%3E%3C/svg%3E");
+  animation: drift 14s linear infinite reverse;
+}
+@keyframes drift { to { background-position-x: -1200px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero { height: auto; }
+  .hero-stick { position: relative; top: auto; }
+  .tide, .hint { display: none; }
+  .hero-copy { opacity: 1; transform: none; }
+  .tide::before, .tide::after { animation: none; }
+}
 
 /* ---------- status strip ---------- */
 .strip { background: var(--board); color: var(--board-text); }
@@ -356,21 +345,26 @@ footer a { color: var(--board-text); }
 </header>
 
 <main>
-<section class="hero" id="top">
-  <canvas id="scene" aria-hidden="true"></canvas>
-  <div class="wrap hero-inner">
-    <p class="eyebrow">Zwembad Aarweide · Nieuwveen</p>
-    <h1>Bommetje.</h1>
-    <p class="lead">Openluchtzwembad met drie baden, een grote glijbaan en een zonneweide. Midden in het Groene Hart.</p>
-    <div class="actions">
-      <a class="btn btn-sun" href="https://shop.justtickets.nl/shop/12650/Zwembad_Aarweide_2026_Tickets" target="_blank" rel="noopener">Koop kaartjes</a>
-      <a class="btn btn-line" href="#tijden">Openingstijden</a>
+<section class="hero" id="top" aria-label="Zwembad Aarweide">
+  <div class="hero-stick">
+    <img class="hero-photo" id="heroPhoto" src="public/images/hero.jpg" data-mask="public/images/hero-water-mask.png" alt="Het zwembad van Aarweide met baanlijnen en startblokken, omringd door bomen" fetchpriority="high" decoding="async">
+    <canvas id="water" aria-hidden="true"></canvas>
+    <canvas id="drops" aria-hidden="true"></canvas>
+    <div class="hero-shade"></div>
+    <div class="hint" id="hint" aria-hidden="true"><i></i>Klik op het water</div>
+    <div class="hero-copy">
+      <div class="wrap">
+        <p class="eyebrow">Openluchtzwembad · Nieuwveen</p>
+        <h1>Zwembad Aarweide</h1>
+        <p class="lead">Drie baden, een grote glijbaan en een zonneweide midden in het Groene Hart.</p>
+        <div class="actions">
+          <a class="btn btn-sun" href="https://shop.justtickets.nl/shop/12650/Zwembad_Aarweide_2026_Tickets" target="_blank" rel="noopener">Koop kaartjes</a>
+          <a class="btn btn-ghost" href="#tijden">Openingstijden</a>
+        </div>
+      </div>
     </div>
+    <div class="tide" aria-hidden="true"></div>
   </div>
-  <button class="replay" id="replay" type="button" aria-disabled="true">
-    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.500 8A5.500 5.500 0 1 1 11.900 4.100M13.500 2v3h-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Nog een bommetje
-  </button>
 </section>
 
 <section class="strip" aria-label="Status en watertemperatuur">
@@ -657,426 +651,255 @@ footer a { color: var(--board-text); }
   }
 })();
 
-/* ===== Hero scene: a pool in cross-section, with a bommetje ===== */
+/* ===== Hero: moving water over the real photo, a splash on click, a waterline that rises on scroll ===== */
 (function () {
-  var cv = document.getElementById('scene');
-  var ctx = cv.getContext('2d');
-  var btn = document.getElementById('replay');
   var hero = document.getElementById('top');
+  var stick = hero.querySelector('.hero-stick');
+  var nav = document.querySelector('.nav');
+  var photo = document.getElementById('heroPhoto');
+  var glc = document.getElementById('water');
+  var dcv = document.getElementById('drops');
+  var hint = document.getElementById('hint');
   var reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  var rad = function (d) { return d * Math.PI / 180; };
   var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
-  var ease = function (k) { k = clamp(k, 0, 1); return k * k * (3 - 2 * k); };
-  var rand = function (a, b) { return a + Math.random() * (b - a); };
-  var gauss = function () { return (Math.random() + Math.random() + Math.random() - 1.5) / 1.5; };
+  var ALIGN = [0.55, 0.55];
+  var progress = 0;
 
-  /* pose = [torso lean, thigh, knee bend, upper arm, elbow] in degrees; limb angles measured from "down", positive = forward */
-  var POSES = {
-    stand:  [0, 0, 0, 8, 12],
-    crouch: [22, 45, 80, -35, 0],
-    launch: [-4, 4, 6, 150, 5],
-    reach:  [0, 10, 25, 170, 0],
-    tuck:   [25, 105, 125, 45, -40],
-    drift:  [12, 55, 95, 30, 10]
-  };
-  var KF = [[0, POSES.crouch], [0.12, POSES.launch], [0.30, POSES.reach], [0.48, POSES.tuck]];
-  function lerpPose(a, b, k) { return a.map(function (v, i) { return v + (b[i] - v) * k; }); }
-  function flightPose(tf) {
-    if (tf <= 0) return KF[0][1];
-    for (var i = 1; i < KF.length; i++) {
-      if (tf <= KF[i][0]) return lerpPose(KF[i - 1][1], KF[i][1], ease((tf - KF[i - 1][0]) / (KF[i][0] - KF[i - 1][0])));
+  /* ----- scroll: the waterline ----- */
+  function layout() { document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px'); }
+  function onScroll() {
+    var total = hero.offsetHeight - stick.offsetHeight;
+    var s = nav.offsetHeight - hero.getBoundingClientRect().top;
+    var p = total > 0 && !reduceMQ.matches ? clamp(s / total, 0, 1) : 0;
+    progress = p * p * (3 - 2 * p);
+    hero.style.setProperty('--p', progress.toFixed(4));
+  }
+  layout(); onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { layout(); onScroll(); });
+
+  /* ----- WebGL water ----- */
+  var gl = null;
+  try { gl = glc.getContext('webgl', { alpha: false, antialias: false }) || glc.getContext('experimental-webgl'); } catch (e) { gl = null; }
+  if (!gl) return;
+
+  var VS = 'attribute vec2 aPos;varying vec2 vUv;void main(){vUv=vec2(aPos.x*0.5+0.5,0.5-aPos.y*0.5);gl_Position=vec4(aPos,0.0,1.0);}';
+  var FS = [
+    'precision highp float;',
+    'varying vec2 vUv;',
+    'uniform sampler2D uImg;uniform sampler2D uMask;',
+    'uniform vec2 uRes;uniform float uIA;uniform vec2 uAlign;',
+    'uniform float uTime;uniform float uAmb;',
+    'uniform vec4 uRip[10];',
+    'vec2 toImg(vec2 uv){',
+    '  float sa=uRes.x/uRes.y;',
+    '  vec2 s=sa>uIA?vec2(1.0,uIA/sa):vec2(sa/uIA,1.0);',
+    '  vec2 c=uAlign*(1.0-s)+s*0.5;',
+    '  return c+(uv-0.5)*s;',
+    '}',
+    'float height(vec2 iuv){',
+    '  vec2 P=vec2(iuv.x*uIA,iuv.y*2.4);',
+    '  float persp=mix(0.5,1.25,smoothstep(0.42,0.8,iuv.y));',
+    '  float t=uTime;',
+    '  float h=0.0;',
+    '  h+=sin(P.x*34.0+t*0.8+sin(P.y*17.0+t*0.5)*1.6)*0.5;',
+    '  h+=sin(P.x*57.0-P.y*23.0-t*1.1)*0.35;',
+    '  h+=sin(P.y*47.0+P.x*17.0+t*0.65)*0.3;',
+    '  h*=0.0011*persp*uAmb;',
+    '  for(int i=0;i<10;i++){',
+    '    vec4 r=uRip[i];',
+    '    float age=uTime-r.z;',
+    '    if(r.w>0.0&&age>0.0&&age<5.0){',
+    '      vec2 C=vec2(r.x*uIA,r.y*2.4);',
+    '      float d=length(P-C);',
+    '      float front=age*0.2;',
+    '      float x=(d-front)/0.11;',
+    '      float env=exp(-age*0.8)*exp(-x*x);',
+    '      h+=r.w*0.0045*sin((d-front)*62.0)*env*persp;',
+    '    }',
+    '  }',
+    '  return h;',
+    '}',
+    'void main(){',
+    '  vec2 iuv=toImg(vUv);',
+    '  float w=texture2D(uMask,iuv).r;',
+    '  float e=0.0025;',
+    '  float hx=height(iuv+vec2(e,0.0))-height(iuv-vec2(e,0.0));',
+    '  float hy=height(iuv+vec2(0.0,e))-height(iuv-vec2(0.0,e));',
+    '  vec2 g=vec2(hx,hy)/(2.0*e);',
+    '  vec3 col=texture2D(uImg,iuv+g*0.0075*w).rgb;',
+    '  vec3 n=normalize(vec3(-g*7.0,1.0));',
+    '  vec3 H=normalize(normalize(vec3(-0.25,-0.45,0.85))+vec3(0.0,0.0,1.0));',
+    '  float spec=pow(max(dot(n,H),0.0),260.0);',
+    '  col+=vec3(spec)*0.16*w;',
+    '  col*=1.0+dot(g,vec2(-0.35,-0.6))*0.3*w;',
+    '  float flash=0.0;',
+    '  for(int i=0;i<10;i++){',
+    '    vec4 r=uRip[i];',
+    '    float age=uTime-r.z;',
+    '    if(r.w>0.0&&age>0.0&&age<1.2){',
+    '      vec2 d=(iuv-r.xy)*vec2(uIA,2.4);',
+    '      flash+=r.w*exp(-age*6.0)*exp(-dot(d,d)/0.0025);',
+    '    }',
+    '  }',
+    '  col+=vec3(0.85,0.95,1.0)*flash*0.5*w;',
+    '  gl_FragColor=vec4(col,1.0);',
+    '}'
+  ].join('\n');
+
+  function compile(type, src) {
+    var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { if (window.console) console.error(gl.getShaderInfoLog(s)); return null; }
+    return s;
+  }
+  var vs = compile(gl.VERTEX_SHADER, VS), fs = compile(gl.FRAGMENT_SHADER, FS);
+  if (!vs || !fs) return;
+  var prog = gl.createProgram();
+  gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+  gl.useProgram(prog);
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  var aPos = gl.getAttribLocation(prog, 'aPos');
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+  var U = {};
+  ['uImg', 'uMask', 'uRes', 'uIA', 'uAlign', 'uTime', 'uAmb', 'uRip'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+
+  function makeTex(el, unit) {
+    var t = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0 + unit);
+    gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, el);
+    return t;
+  }
+
+  /* ----- state ----- */
+  var W = 0, H = 0, dpr = 1, IA = 1.333;
+  var rip = new Float32Array(40);       /* 10 ripples: x, y (image uv), start time, strength */
+  var drops = [];
+  var maskData = null, maskW = 0, maskH = 0;
+  var time = 0, last = 0, raf = 0, visible = true, ready = false;
+  var dctx = dcv.getContext('2d');
+
+  function size() {
+    W = stick.clientWidth; H = stick.clientHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    glc.width = Math.round(W * dpr); glc.height = Math.round(H * dpr);
+    dcv.width = Math.round(W * dpr); dcv.height = Math.round(H * dpr);
+    gl.viewport(0, 0, glc.width, glc.height);
+  }
+  function toImg(px, py) {
+    var sa = W / H, sx, sy;
+    if (sa > IA) { sx = 1; sy = IA / sa; } else { sx = sa / IA; sy = 1; }
+    var cx = ALIGN[0] * (1 - sx) + sx * 0.5, cy = ALIGN[1] * (1 - sy) + sy * 0.5;
+    return [cx + (px / W - 0.5) * sx, cy + (py / H - 0.5) * sy];
+  }
+  function maskAt(iu) {
+    if (!maskData) return (iu[1] > 0.42 && iu[1] < 0.78) ? 1 : 0;
+    var x = clamp(Math.round(iu[0] * (maskW - 1)), 0, maskW - 1), y = clamp(Math.round(iu[1] * (maskH - 1)), 0, maskH - 1);
+    return maskData[(y * maskW + x) * 4] / 255;
+  }
+  function addRipple(u, v, amp) {
+    var idx = 0, oldest = Infinity;
+    for (var i = 0; i < 10; i++) { if (rip[i * 4 + 3] === 0) { idx = i; oldest = -1; break; } if (rip[i * 4 + 2] < oldest) { oldest = rip[i * 4 + 2]; idx = i; } }
+    rip[idx * 4] = u; rip[idx * 4 + 1] = v; rip[idx * 4 + 2] = time; rip[idx * 4 + 3] = amp;
+    kick();
+  }
+  function rippleActive() {
+    for (var i = 0; i < 10; i++) if (rip[i * 4 + 3] > 0 && time - rip[i * 4 + 2] < 5) return true;
+    return false;
+  }
+
+  /* droplets: a few small sprays above the point of a click */
+  function spawnDrops(px, py) {
+    var persp = 0.6 + 0.7 * clamp((py / H - 0.3) / 0.5, 0, 1);
+    for (var i = 0; i < 16; i++) {
+      drops.push({ x: px + (Math.random() - 0.5) * 16 * persp, y: py, y0: py, vx: (Math.random() - 0.5) * 120 * persp,
+        vy: -(130 + Math.random() * 180) * persp, g: 720 * persp, r: (1.2 + Math.random() * 2.2) * persp });
     }
-    return POSES.tuck;
   }
-  function legMetrics(p) {
-    var th = rad(p[1]), kn = rad(p[2]);
-    var kx = Math.sin(th) * 24, ky = Math.cos(th) * 24;
-    return { fx: kx + Math.sin(th - kn) * 24, fy: ky + Math.cos(th - kn) * 24 };
-  }
-
-  var NAMES = ['sky-top', 'sky-bot', 'sun', 'sun-glow', 'lawn', 'lawn-dark', 'tree', 'tree2', 'water-base', 'water-top', 'water-bot',
-    'deck', 'deck-edge', 'post', 'board', 'tile', 'foam', 'outline', 'skin', 'skin-far', 'short', 'cap', 'coral', 'yellow', 'white'];
-  var C = {};
-  function readColors() {
-    var s = getComputedStyle(document.documentElement);
-    NAMES.forEach(function (n) { C[n] = s.getPropertyValue('--sc-' + n).trim(); });
-  }
-
-  var W = 0, H = 0, dpr = 1, u = 1, waterY = 0, wallX = 0, deckY = 0, boardY = 0, tipX = 0, rootX = 0, depth = 0;
-  var t = 0;
-  var phase = 'idle', pt = 0, trailAcc = 0;
-  var S = { hx: 0, hy: 0, vx: 0, vy: 0, g: 1500, alpha: 1, pose: POSES.stand, bend: 0, bendV: 0, bendT: 0, k: 1 };
-  var drops = [], bubbles = [], ripples = [], columns = [], foams = [];
-  var raf = 0, last = 0, inView = true;
-
-  function resize() {
-    var r = cv.getBoundingClientRect();
-    if (!r.width || !r.height) return;
-    W = r.width; H = r.height;
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-    u = clamp(W / 950, 0.62, 1.3);
-    depth = clamp(130 * u, 100, 150);
-    waterY = H - depth;
-    wallX = W - clamp(W * 0.2, 120, 260);
-    deckY = waterY - 10 * u;
-    boardY = waterY - 58 * u;
-    rootX = wallX + 40 * u;
-    tipX = wallX - 125 * u;
-    resetScene();
-    draw();
-    schedule();
-  }
-
-  function resetScene() {
-    phase = 'idle'; pt = 0; S.alpha = 1; S.pose = POSES.stand; S.bend = 0; S.bendV = 0; S.bendT = 0;
-    drops = []; bubbles = []; ripples = []; columns = []; foams = [];
-    setButton(true);
-  }
-  function setButton(ready) { btn.setAttribute('aria-disabled', ready ? 'false' : 'true'); }
-
-  function groundedHip(p) {
-    var m = legMetrics(p);
-    return { x: tipX - 4 * u + m.fx * u, y: boardY + S.bend - m.fy * u };
-  }
-
-  function dive() {
-    if (phase !== 'idle') return;
-    phase = 'crouch'; pt = 0; S.k = rand(0.92, 1.12);
-    setButton(false);
-  }
-
-  function launch() {
-    var hip = groundedHip(S.pose);
-    S.hx = hip.x; S.hy = hip.y;
-    var g = 1500 * u; S.g = g;
-    var up = rand(60, 76) * u;
-    var vy0 = -Math.sqrt(2 * g * up);
-    var yImp = waterY - 16 * u;
-    var T = (-vy0 + Math.sqrt(vy0 * vy0 - 2 * g * (S.hy - yImp))) / g;
-    S.vx = -(rand(88, 118) * u) / T;
-    S.vy = vy0;
-    phase = 'fly'; pt = 0;
-    S.bendT = -2 * u; S.bendV = -430 * u;
-  }
-
-  function surf(x) {
-    var y = waterY + Math.sin(x * 0.018 + t * 1.4) * 1.8 * u + Math.sin(x * 0.043 - t * 1.9) * 1.1 * u;
-    for (var i = 0; i < ripples.length; i++) {
-      var r = ripples[i];
-      var d = Math.abs(x - r.x), front = r.age * 330 * u, env = Math.exp(-r.age * 1.25) * r.k;
-      y += env * 4.8 * u * Math.cos((d - front) / (12 * u)) * Math.exp(-Math.pow((d - front) / (70 * u), 2)) / (1 + d / (380 * u));
-      y -= 15 * u * r.k * Math.exp(-r.age * 7) * Math.exp(-Math.pow(d / (32 * u), 2));
-    }
-    return y;
-  }
-
-  function impact() {
-    var x = S.hx;
-    var speed = Math.abs(S.vy);
-    var k = clamp(speed / (650 * u), 0.85, 1.25) * S.k;
-    phase = 'sink'; pt = 0; trailAcc = 0;
-    S.vy *= 0.38; S.vx *= 0.15;
-    columns.push({ x: x, age: 0, k: k });
-    foams.push({ x: x, age: 0, k: k });
-    ripples.push({ x: x, age: 0, k: k });
-    if (ripples.length > 3) ripples.shift();
-    var i, ang, sp;
-    for (i = 0; i < 54; i++) {
-      ang = -Math.PI / 2 + gauss() * 0.26; sp = (300 + Math.random() * 560) * u * k;
-      drops.push({ x: x + gauss() * 10 * u, y: waterY, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, r: (1.4 + Math.random() * 3.2) * u });
-    }
-    for (i = 0; i < 26; i++) {
-      ang = -Math.PI / 2 + (Math.random() < 0.5 ? -1 : 1) * (0.65 + Math.random() * 0.5); sp = (160 + Math.random() * 300) * u * k;
-      drops.push({ x: x + gauss() * 14 * u, y: waterY, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, r: (1 + Math.random() * 2.2) * u });
-    }
-    for (i = 0; i < 38; i++) {
-      bubbles.push({ x: x + gauss() * 28 * u, y: waterY + rand(8, 72) * u, r: rand(1.3, 4.6) * u, vy: -rand(25, 85) * u, ph: Math.random() * 6.28 });
+  function stepDrops(dt) {
+    for (var i = drops.length - 1; i >= 0; i--) {
+      var d = drops[i]; d.vy += d.g * dt; d.x += d.vx * dt; d.y += d.vy * dt;
+      if (d.vy > 0 && d.y >= d.y0) drops.splice(i, 1);
     }
   }
-
-  function update(dt) {
-    t += dt; pt += dt;
-    var steps = 2, h = dt / steps;
-    for (var s = 0; s < steps; s++) {
-      S.bendV += (-1100 * (S.bend - S.bendT) - 16 * S.bendV) * h;
-      S.bend += S.bendV * h;
-    }
-    if (phase === 'idle') {
-      var sway = Math.sin(t * 1.7) * 1.5;
-      S.pose = POSES.stand.map(function (v, i) { return i === 0 ? v + sway : v; });
-    } else if (phase === 'crouch') {
-      var k = ease(pt / 0.45);
-      S.pose = lerpPose(POSES.stand, POSES.crouch, k);
-      S.bendT = 9 * u * k;
-      if (pt >= 0.5) launch();
-    } else if (phase === 'fly') {
-      S.vy += S.g * dt; S.hx += S.vx * dt; S.hy += S.vy * dt;
-      S.pose = flightPose(pt);
-      S.bendT = 0;
-      var bottom = S.hy + Math.max(legMetrics(S.pose).fy, 0) * u;
-      if (bottom >= waterY - 1 * u) impact();
-    } else if (phase === 'sink') {
-      S.vy *= Math.exp(-3.0 * dt); S.vx *= Math.exp(-5 * dt);
-      S.hx += S.vx * dt; S.hy += S.vy * dt;
-      S.pose = lerpPose(POSES.tuck, POSES.drift, ease(pt / 0.7));
-      S.alpha = pt < 0.8 ? 1 : 1 - ease((pt - 0.8) / 0.8);
-      trailAcc += dt;
-      if (trailAcc > 0.06 && S.alpha > 0.3) {
-        trailAcc = 0;
-        bubbles.push({ x: S.hx + gauss() * 8 * u, y: S.hy - 10 * u, r: rand(1.2, 3.2) * u, vy: -rand(30, 70) * u, ph: Math.random() * 6.28 });
-      }
-      if (pt > 1.6) { phase = 'gone'; pt = 0; S.alpha = 0; }
-    } else if (phase === 'gone') {
-      if (pt > 1.5) { phase = 'back'; pt = 0; S.pose = POSES.stand; S.alpha = 0; }
-    } else if (phase === 'back') {
-      S.alpha = ease(pt / 0.6);
-      if (pt >= 0.6) { phase = 'idle'; pt = 0; S.alpha = 1; setButton(true); }
-    }
-
-    var i;
-    for (i = 0; i < drops.length; i++) { var d = drops[i]; d.vy += 1500 * u * dt; d.x += d.vx * dt; d.y += d.vy * dt; }
-    drops = drops.filter(function (d) { return d.y < waterY + 2 * u || d.vy < 0; });
-    for (i = 0; i < bubbles.length; i++) { var b = bubbles[i]; b.y += b.vy * dt; b.x += Math.sin(t * 3 + b.ph) * 10 * u * dt; }
-    bubbles = bubbles.filter(function (b) { return b.y > waterY + 2 * u; });
-    columns.forEach(function (c) { c.age += dt; }); columns = columns.filter(function (c) { return c.age < 0.9; });
-    foams.forEach(function (f) { f.age += dt; }); foams = foams.filter(function (f) { return f.age < 1.6; });
-    ripples.forEach(function (r) { r.age += dt; }); ripples = ripples.filter(function (r) { return r.age < 5; });
+  function drawDrops() {
+    dctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    dctx.clearRect(0, 0, W, H);
+    dctx.fillStyle = 'rgba(255,255,255,.92)';
+    for (var i = 0; i < drops.length; i++) { var d = drops[i]; dctx.beginPath(); dctx.arc(d.x, d.y, d.r, 0, 6.2832); dctx.fill(); }
   }
 
-  /* ---------- drawing ---------- */
-  function waterPath() {
-    ctx.beginPath();
-    ctx.moveTo(0, surf(0));
-    for (var x = 8; x < wallX; x += 8) ctx.lineTo(x, surf(x));
-    ctx.lineTo(wallX, surf(wallX)); ctx.lineTo(wallX, H); ctx.lineTo(0, H); ctx.closePath();
+  function render() {
+    gl.uniform1i(U.uImg, 0); gl.uniform1i(U.uMask, 1);
+    gl.uniform2f(U.uRes, W, H); gl.uniform1f(U.uIA, IA); gl.uniform2f(U.uAlign, ALIGN[0], ALIGN[1]);
+    gl.uniform1f(U.uTime, time); gl.uniform1f(U.uAmb, reduceMQ.matches ? 0 : 1);
+    gl.uniform4fv(U.uRip, rip);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    if (!ready) { ready = true; glc.classList.add('ready'); }
   }
-
-  function drawBackdrop() {
-    var g = ctx.createLinearGradient(0, 0, 0, waterY);
-    g.addColorStop(0, C['sky-top']); g.addColorStop(1, C['sky-bot']);
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-
-    var sx = W * 0.82, sy = Math.max(70 * u, waterY - 250 * u);
-    var glow = ctx.createRadialGradient(sx, sy, 10 * u, sx, sy, 150 * u);
-    glow.addColorStop(0, C['sun-glow']); glow.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = glow; ctx.fillRect(sx - 160 * u, sy - 160 * u, 320 * u, 320 * u);
-    ctx.fillStyle = C.sun; ctx.beginPath(); ctx.arc(sx, sy, 32 * u, 0, 6.2832); ctx.fill();
-
-    var lawnTop = waterY - 32 * u;
-    var trees = [[0.06, 26], [0.17, 34], [0.31, 22], [0.47, 30], [0.6, 24], [0.74, 33], [0.93, 28]];
-    trees.forEach(function (tr) {
-      var R = tr[1] * u * 0.8, cx = W * tr[0], cy = lawnTop - R * 0.55;
-      ctx.fillStyle = C.tree; ctx.beginPath(); ctx.ellipse(cx, cy, R, R * 0.88, 0, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = C.tree2; ctx.beginPath(); ctx.ellipse(cx - R * 0.25, cy - R * 0.2, R * 0.6, R * 0.5, 0, 0, 6.2832); ctx.fill();
-    });
-    var lg = ctx.createLinearGradient(0, lawnTop, 0, waterY);
-    lg.addColorStop(0, C.lawn); lg.addColorStop(1, C['lawn-dark']);
-    ctx.fillStyle = lg;
-    ctx.beginPath(); ctx.moveTo(0, waterY);
-    for (var x = 0; x <= W; x += 10) ctx.lineTo(x, lawnTop + Math.sin(x * 0.011) * 5 * u + Math.sin(x * 0.027) * 2 * u);
-    ctx.lineTo(W, waterY); ctx.closePath(); ctx.fill();
-
-    var cols = [C.coral, C.yellow, C.white];
-    [0.11, 0.26, 0.41, 0.57, 0.7, 0.88].forEach(function (fx, i) {
-      var px = W * fx, base = waterY - 9 * u + (i % 2) * 4 * u, top = base - 19 * u;
-      ctx.strokeStyle = C.outline; ctx.lineWidth = 1.5 * u; ctx.beginPath(); ctx.moveTo(px, base); ctx.lineTo(px, top); ctx.stroke();
-      ctx.fillStyle = cols[i % 3]; ctx.beginPath(); ctx.arc(px, top, 11 * u, Math.PI, 0); ctx.closePath(); ctx.fill();
-      ctx.strokeStyle = C.outline; ctx.lineWidth = 1 * u; ctx.stroke();
-    });
-  }
-
-  function drawPool() {
-    ctx.fillStyle = C['water-base']; ctx.fillRect(0, waterY, wallX, H - waterY);
-    var fh = 14 * u;
-    ctx.fillStyle = C.tile; ctx.fillRect(0, H - fh, wallX, fh);
-    ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (var x = 0; x < wallX; x += 28 * u) { ctx.moveTo(x, H - fh); ctx.lineTo(x, H); }
-    ctx.moveTo(0, H - fh / 2); ctx.lineTo(wallX, H - fh / 2);
-    ctx.stroke();
-
-    ctx.fillStyle = C.deck; ctx.fillRect(wallX, deckY, W - wallX, H - deckY);
-    ctx.fillStyle = 'rgba(0,0,0,.14)'; ctx.fillRect(wallX, waterY, W - wallX, H - waterY);
-    ctx.strokeStyle = 'rgba(255,255,255,.28)'; ctx.lineWidth = 1; ctx.beginPath();
-    for (var ty = waterY; ty < H; ty += 16 * u) { ctx.moveTo(wallX, ty); ctx.lineTo(W, ty); }
-    for (var tx = wallX; tx < W; tx += 16 * u) { ctx.moveTo(tx, waterY); ctx.lineTo(tx, H); }
-    ctx.stroke();
-    ctx.fillStyle = C['deck-edge']; ctx.fillRect(wallX - 4 * u, deckY - 4 * u, W - wallX + 4 * u, 5 * u);
-
-    /* tower, ladder and board */
-    ctx.fillStyle = C.post; ctx.fillRect(rootX - 12 * u, boardY, 34 * u, deckY - boardY);
-    ctx.strokeStyle = C.outline; ctx.lineWidth = 1.5 * u; ctx.strokeRect(rootX - 12 * u, boardY, 34 * u, deckY - boardY);
-    var lx = rootX + 34 * u;
-    ctx.strokeStyle = C.post; ctx.lineWidth = 3 * u; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(lx, deckY); ctx.lineTo(lx, boardY - 30 * u); ctx.moveTo(lx + 18 * u, deckY); ctx.lineTo(lx + 18 * u, boardY - 30 * u); ctx.stroke();
-    ctx.lineWidth = 2 * u; ctx.beginPath();
-    for (var ry = deckY - 10 * u; ry > boardY - 26 * u; ry -= 13 * u) { ctx.moveTo(lx, ry); ctx.lineTo(lx + 18 * u, ry); }
-    ctx.stroke();
-    ctx.lineWidth = 2 * u; ctx.beginPath(); ctx.moveTo(rootX - 10 * u, boardY - 26 * u); ctx.lineTo(rootX + 20 * u, boardY - 26 * u); ctx.lineTo(rootX + 20 * u, boardY); ctx.stroke();
-
-    var bendY = boardY + S.bend;
-    ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(rootX, boardY + 3 * u); ctx.quadraticCurveTo((rootX + tipX) / 2, boardY + 3 * u + S.bend * 0.25, tipX, bendY + 3 * u);
-    ctx.strokeStyle = C.outline; ctx.lineWidth = 8.5 * u; ctx.stroke();
-    ctx.strokeStyle = C.board; ctx.lineWidth = 6 * u; ctx.stroke();
-  }
-
-  function seg(pts, w, col) {
-    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
-    for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
-    ctx.strokeStyle = C.outline; ctx.lineWidth = w + 1.8; ctx.stroke();
-    ctx.strokeStyle = col; ctx.lineWidth = w; ctx.stroke();
-  }
-
-  function drawDiver() {
-    if (S.alpha <= 0.01 || phase === 'gone') return;
-    var p = S.pose.map(rad);
-    var hip = (phase === 'fly' || phase === 'sink') ? { x: S.hx, y: S.hy } : groundedHip(S.pose);
-    var aT = p[0], th = p[1], kn = p[2], ua = p[3], el = p[4];
-    ctx.save();
-    ctx.globalAlpha = S.alpha;
-    ctx.translate(hip.x, hip.y); ctx.scale(-u, u);
-
-    var knee = [Math.sin(th) * 24, Math.cos(th) * 24];
-    var foot = [knee[0] + Math.sin(th - kn) * 24, knee[1] + Math.cos(th - kn) * 24];
-    var kneeF = [Math.sin(th + 0.16) * 24, Math.cos(th + 0.16) * 24];
-    var footF = [kneeF[0] + Math.sin(th + 0.16 - kn) * 24, kneeF[1] + Math.cos(th + 0.16 - kn) * 24];
-    var sh = [Math.sin(aT) * 32, -Math.cos(aT) * 32];
-    var head = [sh[0] + Math.sin(aT) * 14, sh[1] - Math.cos(aT) * 14];
-    var elb = [sh[0] + Math.sin(ua) * 18, sh[1] + Math.cos(ua) * 18];
-    var hand = [elb[0] + Math.sin(ua + el) * 17, elb[1] + Math.cos(ua + el) * 17];
-    var uaF = ua - 0.22;
-    var elbF = [sh[0] + Math.sin(uaF) * 18, sh[1] + Math.cos(uaF) * 18];
-    var handF = [elbF[0] + Math.sin(uaF + el) * 17, elbF[1] + Math.cos(uaF + el) * 17];
-
-    seg([[0, 0], kneeF, footF], 6.5, C['skin-far']);
-    seg([[0, 0], [kneeF[0] * 0.6, kneeF[1] * 0.6]], 9, C.short);
-    seg([sh, elbF, handF], 5, C['skin-far']);
-    seg([[0, 0], sh], 12, C.skin);
-    seg([[0, 0], [Math.sin(aT) * 9, -Math.cos(aT) * 9]], 13, C.short);
-    seg([[0, 0], knee, foot], 7, C.skin);
-    seg([[0, 0], [knee[0] * 0.6, knee[1] * 0.6]], 10, C.short);
-    seg([sh, elb, hand], 5.4, C.skin);
-
-    ctx.fillStyle = C.skin; ctx.strokeStyle = C.outline; ctx.lineWidth = 1.8;
-    ctx.beginPath(); ctx.arc(head[0], head[1], 9.5, 0, 6.2832); ctx.fill(); ctx.stroke();
-    var upAng = -Math.PI / 2 + aT;
-    ctx.fillStyle = C.cap; ctx.beginPath(); ctx.arc(head[0], head[1], 9.8, upAng - Math.PI * 0.62, upAng + Math.PI * 0.45); ctx.closePath(); ctx.fill();
-    ctx.lineWidth = 1.2; ctx.stroke();
-    ctx.restore();
-  }
-
-  function drawWater() {
-    waterPath();
-    var g = ctx.createLinearGradient(0, waterY, 0, H);
-    g.addColorStop(0, C['water-top']); g.addColorStop(1, C['water-bot']);
-    ctx.fillStyle = g; ctx.fill();
-
-    ctx.save(); waterPath(); ctx.clip();
-    ctx.lineWidth = 1.5 * u; ctx.strokeStyle = 'rgba(255,255,255,.09)';
-    for (var i = 0; i < 6; i++) {
-      ctx.beginPath();
-      for (var x = 0; x <= wallX; x += 12) {
-        var y = waterY + (22 + i * 17) * u + Math.sin(x * 0.02 + t * 0.7 + i * 1.7) * 6 * u + Math.sin(x * 0.007 - t * 0.4 + i) * 9 * u;
-        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-    }
-    ctx.restore();
-
-    ctx.beginPath(); ctx.moveTo(0, surf(0));
-    for (var sx = 8; sx <= wallX; sx += 8) ctx.lineTo(sx, surf(sx));
-    ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2 * u; ctx.stroke();
-  }
-
-  function drawSplash() {
-    var i;
-    foams.forEach(function (f) {
-      var rx = (18 + 95 * ease(f.age / 1.3)) * u * f.k, al = 0.55 * (1 - f.age / 1.6);
-      ctx.globalAlpha = Math.max(al, 0);
-      ctx.fillStyle = C.foam; ctx.beginPath(); ctx.ellipse(f.x, waterY + 1 * u, rx, rx * 0.12, 0, 0, 6.2832); ctx.fill();
-      ctx.globalAlpha = 1;
-    });
-    columns.forEach(function (c) {
-      var a = c.age, Hmax = 118 * u * c.k, h;
-      if (a < 0.2) h = Hmax * (1 - Math.pow(1 - a / 0.2, 2)); else h = Hmax * Math.pow(Math.max(0, 1 - (a - 0.2) / 0.62), 1.5);
-      if (h < 2) return;
-      var life = clamp(1 - (a - 0.2) / 0.62, 0, 1);
-      var bw = 32 * u * c.k * (1 + 0.8 * clamp(a / 0.8, 0, 1)), tw = 15 * u * c.k * (1 + 0.9 * clamp(a / 0.6, 0, 1));
-      var y0 = waterY + 2 * u, y1 = y0 - h;
-      var gr = ctx.createLinearGradient(0, y1, 0, y0);
-      gr.addColorStop(0, 'rgba(255,255,255,.97)'); gr.addColorStop(1, 'rgba(214,242,252,.8)');
-      ctx.globalAlpha = 0.6 + 0.4 * life;
-      ctx.fillStyle = gr;
-      ctx.beginPath(); ctx.moveTo(c.x - bw, y0);
-      ctx.bezierCurveTo(c.x - bw * 0.7, y0 - h * 0.45, c.x - tw * 1.1, y0 - h * 0.6, c.x - tw, y1);
-      ctx.arc(c.x, y1, tw, Math.PI, 0);
-      ctx.bezierCurveTo(c.x + tw * 1.1, y0 - h * 0.6, c.x + bw * 0.7, y0 - h * 0.45, c.x + bw, y0);
-      ctx.closePath(); ctx.fill();
-      ctx.beginPath(); ctx.arc(c.x - tw * 0.8, y1 + tw * 0.2, tw * 0.75, 0, 6.2832); ctx.arc(c.x + tw * 0.9, y1 + tw * 0.3, tw * 0.65, 0, 6.2832); ctx.fill();
-      ctx.globalAlpha = 1;
-    });
-    ctx.fillStyle = C.foam;
-    for (i = 0; i < drops.length; i++) {
-      var d = drops[i];
-      ctx.globalAlpha = 0.92; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, 6.2832); ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-    ctx.strokeStyle = C.foam; ctx.lineWidth = 1.2 * u;
-    for (i = 0; i < bubbles.length; i++) {
-      var b = bubbles[i];
-      ctx.globalAlpha = 0.6; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 6.2832); ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-  }
-
-  function draw() {
-    if (!W) return;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, W, H);
-    drawBackdrop();
-    drawPool();
-    drawDiver();
-    drawWater();
-    drawSplash();
-  }
-
-  /* ---------- loop ---------- */
-  function active() { return phase !== 'idle' || drops.length || bubbles.length || columns.length || foams.length || ripples.length; }
-  function frame(ts) {
+  function needFrame() { return visible && (!reduceMQ.matches || rippleActive() || drops.length > 0); }
+  function frame(now) {
     raf = 0;
-    var dt = Math.min((ts - last) / 1000 || 0.016, 0.05);
-    last = ts;
-    update(dt); draw(); schedule();
+    var dt = Math.min((now - last) / 1000, 0.05); last = now; time += dt;
+    stepDrops(dt); render(); drawDrops();
+    if (needFrame()) raf = requestAnimationFrame(frame);
   }
-  function schedule() {
-    if (raf || !inView || !W) return;
-    if (reduceMQ.matches && !active()) return;
-    last = performance.now();
-    raf = requestAnimationFrame(frame);
-  }
+  function kick() { if (!raf && visible) { last = performance.now(); raf = requestAnimationFrame(frame); } }
 
-  btn.addEventListener('click', function () { dive(); schedule(); });
-  cv.addEventListener('click', function () { dive(); schedule(); });
+  /* ----- input ----- */
+  var lastMove = [-999, -999], lastMoveT = 0, hinted = true;
+  function local(e) { var r = stick.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+  function hideHint() { if (hinted) { hinted = false; hint.classList.add('gone'); } }
+  stick.addEventListener('pointerdown', function (e) {
+    if (e.target.closest('a,button') || progress > 0.08) return;
+    var p = local(e), iu = toImg(p[0], p[1]);
+    if (maskAt(iu) < 0.35) return;
+    addRipple(iu[0], iu[1], 1.0); spawnDrops(p[0], p[1]); hideHint();
+  });
+  stick.addEventListener('pointermove', function (e) {
+    if (e.pointerType !== 'mouse' || progress > 0.08) return;
+    var p = local(e), iu = toImg(p[0], p[1]), over = maskAt(iu) >= 0.35;
+    stick.style.cursor = over ? 'pointer' : 'default';
+    if (!over || reduceMQ.matches) return;
+    var dx = p[0] - lastMove[0], dy = p[1] - lastMove[1], now = performance.now();
+    if (dx * dx + dy * dy > 1600 && now - lastMoveT > 160) { lastMove = p; lastMoveT = now; addRipple(iu[0], iu[1], 0.16); }
+  });
 
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (es) { inView = es[0].isIntersecting; if (inView) schedule(); }).observe(hero);
-  }
-  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(cv); else window.addEventListener('resize', resize);
-
-  function refreshColors() { readColors(); draw(); }
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', refreshColors);
-  new MutationObserver(refreshColors).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-  reduceMQ.addEventListener('change', schedule);
-
-  readColors();
-  resize();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(resize);
-
-  if (!reduceMQ.matches) setTimeout(function () { dive(); schedule(); }, 1200);
+  /* ----- start ----- */
+  function loadImg(src, cb) { var im = new Image(); im.onload = function () { cb(im); }; im.onerror = function () { cb(null); }; im.src = src; }
+  var photoSrc = photo.currentSrc || photo.src, maskSrc = photo.getAttribute('data-mask');
+  loadImg(photoSrc, function (img) {
+    if (!img) return;
+    loadImg(maskSrc, function (mimg) {
+      if (!mimg) return;
+      try {
+        IA = img.naturalWidth / img.naturalHeight;
+        makeTex(img, 0); makeTex(mimg, 1);
+      } catch (e) { return; }           /* e.g. opened from file://, where WebGL may not read images: keep the plain photo */
+      try {
+        var c = document.createElement('canvas'); maskW = mimg.naturalWidth; maskH = mimg.naturalHeight; c.width = maskW; c.height = maskH;
+        var cx = c.getContext('2d'); cx.drawImage(mimg, 0, 0); maskData = cx.getImageData(0, 0, maskW, maskH).data;
+      } catch (e) { maskData = null; }
+      size(); render();
+      window.addEventListener('resize', function () { size(); render(); });
+      if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) kick(); }).observe(stick);
+      document.addEventListener('visibilitychange', function () { visible = !document.hidden; if (visible) kick(); });
+      if (!reduceMQ.matches) {
+        kick();
+        setTimeout(function () { addRipple(0.46, 0.58, 0.8); }, 900);
+        setTimeout(function () { addRipple(0.66, 0.52, 0.5); }, 1700);
+      }
+      reduceMQ.addEventListener('change', function () { render(); kick(); });
+    });
+  });
 })();
 </script>
 </body>
