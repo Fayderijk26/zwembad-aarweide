@@ -16,6 +16,7 @@ Doel: een nieuwe, hoogwaardige en rustig mooie website voor openluchtzwembad Aar
 - Hero-koptekst: sober en sterk, bijvoorbeeld "Zwembad Aarweide" met de regel "Openluchtzwembad in Nieuwveen". Primaire knop "Koop kaartjes".
 
 ## Foto's
+- De oude miniaturen van de vorige site (100 px en 450 px, met watermerk) zijn verwijderd uit de repository en mogen niet meer worden gebruikt. Gebruik alleen foto's die de eigenaar daarna toevoegt in `public/images/`.
 - Foto's komen van de oude site en zijn mogelijk klein. Een schermvullende hero heeft minimaal ~1920 px breed nodig. Controleer de afmetingen en kies de scherpste foto voor de hero.
 - Verbeteren mag: bijsnijden, kleurcorrectie, lichte scherpte, ruisreductie, eventueel een AI-upscaler (dat voegt geen echte details toe, dus niet overdrijven). Combineren tot één beeld (panorama of compositie) alleen als de foto's overlappen of dezelfde hoek hebben. Geen mensen of dingen erbij verzinnen.
 - Beste oplossing op termijn: nieuwe foto's of drone-opnames bij zonnig weer als het zwembad open is.
