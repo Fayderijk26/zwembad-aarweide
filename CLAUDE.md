@@ -3,10 +3,12 @@
 Doel: een nieuwe, hoogwaardige en rustig mooie website voor openluchtzwembad Aarweide (Schilkerweg 21, Nieuwveen) ter vervanging van https://www.zwembadaarweide.nl/. Taal van de site: Nederlands. Doelgroep: gezinnen, zwemmers en inwoners van Nieuwveen en omgeving.
 
 ## Huidige staat
-- Next.js (App Router) + TypeScript + Tailwind v4 + Framer Motion. Inhoud staat in `content/site.ts`.
-- `index.html` is de oude losse versie (HTML, CSS, JS), alleen nog als referentie.
-- De hero (`components/Hero.tsx`) toont `public/Turquoise gemeentelijk zwembad tussen groene bomen-2.png` met WebGL-water binnen `public/images/hero-water-mask.png`, een plons bij klik of tik en een waterlijn die bij scrollen stijgt. Stijlen staan onderaan `app/globals.css`.
-- Secties: zwemmen, openingstijden (met live status in Amsterdamse tijd), tarieven, activiteiten, nieuws, goed om te weten, contact. Deze inhoud blijft.
+- Inhoud staat in `content/` (`site.ts`, `nieuws.ts`, `sponsoren.ts`); pagina's lezen daaruit. Feiten en prijzen alleen daar bijwerken.
+- `index.html` is de oude losse versie, alleen nog als referentie.
+- De hero (`components/Hero.tsx`) legt WebGL-water over `public/images/hero.webp`, binnen het masker `public/images/hero-water-mask.png`.
+- Losse pagina's onder `app/` (bezoek, activiteiten, nieuws met een pagina per bericht, foto's, over ons, contact, privacy). Gedeelde bouwstenen (paginakop met golfrand, `Block`, `NextSteps`) in `components/ui.tsx`.
+- Statische export (`output: "export"`), zodat de site op GitHub Pages kan. Bouw met `GITHUB_PAGES=true` voor het pad `/zwembad-aarweide`. Links naar bestanden in `public/` lopen via `asset()` uit `components/ui.tsx`, anders missen ze dat pad.
+- De site staat nog NIET online. Pages niet aanzetten en niet publiceren zonder akkoord van de eigenaar.
 
 ## Nieuwe richting hero en animatie
 - De hero toont een echte foto van het zwembad, schermvullend. Geen getekende scène, geen mensen, geen grapjes (de "Bommetje."-kop is geschrapt als te kinderachtig).
@@ -24,12 +26,9 @@ Doel: een nieuwe, hoogwaardige en rustig mooie website voor openluchtzwembad Aar
 - Houd bestanden onder een paar MB. Gebruik `next/image` voor WebP en responsieve groottes. Geen video's in git.
 
 ## Gewenste volgende stappen
-1. ~~Omzetten naar Next.js (App Router) + TypeScript + Tailwind, met Framer Motion.~~ Gedaan (branch `nextjs`).
-2. ~~Hero met waterbeweging en plons-bij-klik bouwen.~~ Gedaan.
-3. ~~Waterlijn-overgang tussen hero en de rest van de pagina.~~ Gedaan.
-4. Tarieven, data en activiteiten staan op seizoen 2026 en moeten voor 2027 worden bijgewerkt. Zie `TODO` hieronder.
-5. Fotogalerij, sponsoren, stichting en vrijwilligers van de oude site nog overnemen.
-6. Toegankelijkheid (contrast, toetsenbord, `prefers-reduced-motion`) en snelheid (Lighthouse) controleren. Een Awwwards-niveau uitvoering is het streven.
+1. Tarieven, data en activiteiten staan op seizoen 2026 en moeten voor 2027 worden bijgewerkt. Zie `TODO` hieronder.
+2. ~~Inhoud van de oude site overnemen.~~ Gedaan; links naar pdf's en formulieren wijzen nog naar zwembadaarweide.nl.
+3. Toegankelijkheid (contrast, toetsenbord, `prefers-reduced-motion`) en snelheid (Lighthouse) controleren. Een Awwwards-niveau uitvoering is het streven.
 
 ## Ontwerprichting
 - Kleuren: diepblauw `#0b2c47` (inkt), poolblauw `#0f8fd6`, zonnegeel `#ffb81c` (knoppen, accent), lichte achtergrond `#f3fafd`. Donkere weergave is aanwezig. Koraal alleen als zeldzaam accent.
@@ -37,16 +36,12 @@ Doel: een nieuwe, hoogwaardige en rustig mooie website voor openluchtzwembad Aar
 - Toon: rustig, warm en hoogwaardig. Korte, directe zinnen. Geen stockfoto-gevoel en geen kinderachtige humor.
 - Vermijd generieke AI-looks: paarse gradients, alles gecentreerd, dezelfde kaart overal.
 
-## Feiten (bron: oude site, seizoen 2026)
-- Seizoen 2026: 28 april t/m 13 september. Ma, wo, vr 7:00-20:00; di, do 8:00-20:00; za, zo en feestdagen 12:00-18:00; zondag in juli, augustus en september vanaf 11:00.
-- Los kaartje EUR 6,80. Kinderen tot een jaar gratis. Tickets en abonnementen via Just Tickets.
-- Diep bad 23 graden C, ondiepe baden 21 graden C (richtwaarden).
-- Telefoon 0172-602516 (alleen tijdens openingstijden), info@zwembadaarweide.nl (mail heeft voorkeur).
-
 ## TODO voor de eigenaar
 - Prijzen, openingstijden en activiteiten voor 2027 aanleveren.
 - Betere foto's aanleveren als de bestaande te klein zijn.
 - Betekenis van het sterretje bij "Zondag*" en "Feestdagen*" op de oude openingstijdenpagina bevestigen.
+- Bestuursrollen bevestigen: de oude stichtingspagina is onduidelijk over wie voorzitter is (Jan Otto of Anton Captein a.i.).
+- Pdf's (privacy, vacatures, sponsorformulier, zwembandjes) aanleveren als ze op de nieuwe site zelf moeten staan.
 
 ## Werkafspraken
 - Kleine commits met duidelijke Nederlandse of Engelse berichten.
