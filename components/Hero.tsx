@@ -2,13 +2,14 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { links } from "@/content/site";
-import heroPhoto from "@/public/Turquoise gemeentelijk zwembad tussen groene bomen-2.png";
+import heroPhoto from "@/public/images/hero.webp";
 import { ExternalLink } from "./ExternalLink";
 
 /** Wit = water, zwart = de rest. Zelfde verhouding als de foto. */
-const MASK_SRC = "/images/hero-water-mask.png";
+const MASK_SRC = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/images/hero-water-mask.png`;
 /** Uitsnijpunt van de foto (x, y), gelijk aan object-position hieronder. */
 const ALIGN: [number, number] = [0.55, 0.55];
 const RIPPLES = 10;
@@ -320,7 +321,6 @@ export function Hero() {
             fill
             priority
             sizes="100vw"
-            placeholder="blur"
             className="hero-photo"
             style={{ objectPosition: "55% 55%" }}
           />
@@ -359,9 +359,9 @@ export function Hero() {
               <ExternalLink className="btn btn-sun" href={links.tickets}>
                 Koop kaartjes
               </ExternalLink>
-              <a className="btn btn-ghost" href="#tijden">
+              <Link className="btn btn-ghost" href="/openingstijden/">
                 Openingstijden
-              </a>
+              </Link>
             </motion.div>
           </div>
         </div>
