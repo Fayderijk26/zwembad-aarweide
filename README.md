@@ -19,4 +19,4 @@ npm run typecheck
 - `app/globals.css`: kleurtokens (licht en donker) en Tailwind-thema.
 - `index.html`: de eerste, losse versie. Blijft als referentie tot de Next.js-versie live staat.
 
-Inhoud en tarieven komen van https://www.zwembadaarweide.nl/ (seizoen 2026) en moeten voor 2027 worden bijgewerkt.
+Inhoud en tarieven komen van https://www.zwembadaarweide.nl/ (seizoen 2026) en moeten voor 2027 worden bijgewerkt. Zie `CLAUDE.md`.
