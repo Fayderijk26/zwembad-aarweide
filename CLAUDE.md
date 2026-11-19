@@ -1,24 +1,38 @@
 # Zwembad Aarweide: projectcontext
 
-Doel: een nieuwe, opvallend mooie website voor openluchtzwembad Aarweide (Schilkerweg 21, Nieuwveen) ter vervanging van https://www.zwembadaarweide.nl/. Taal van de site: Nederlands. Doelgroep: gezinnen, zwemmers en inwoners van Nieuwveen en omgeving.
+Doel: een nieuwe, hoogwaardige en rustig mooie website voor openluchtzwembad Aarweide (Schilkerweg 21, Nieuwveen) ter vervanging van https://www.zwembadaarweide.nl/. Taal van de site: Nederlands. Doelgroep: gezinnen, zwemmers en inwoners van Nieuwveen en omgeving.
 
 ## Huidige staat
-- `index.html` is een zelfstandige eerste versie (HTML, CSS, JS, canvas). Geen build-stap.
-- De hero is een canvas-scène: doorsnede van een zwembad, een duiker springt van de duikplank en maakt een bommetje met splash, rimpels en bubbels. Knop "Nog een bommetje" herhaalt de duik.
-- Secties: zwemmen, openingstijden (met live status in Amsterdamse tijd), tarieven, activiteiten, nieuws, goed om te weten, contact.
+- `index.html` is een zelfstandige eerste versie (HTML, CSS, JS, canvas) met een getekende hero-scène. Dat is een tijdelijke placeholder en wordt vervangen, zie de nieuwe richting hieronder.
+- Secties: zwemmen, openingstijden (met live status in Amsterdamse tijd), tarieven, activiteiten, nieuws, goed om te weten, contact. Deze inhoud blijft.
+- Echte foto's van het zwembad staan in `public/images/` (zodra de eigenaar ze heeft toegevoegd).
+
+## Nieuwe richting hero en animatie
+- De hero toont een echte foto van het zwembad, schermvullend. Geen getekende scène, geen mensen, geen grapjes (de "Bommetje."-kop is geschrapt als te kinderachtig).
+- Bij het openen beweegt het water rustig: glinsteringen en zachte golfjes over het wateroppervlak (WebGL-shader of canvas-displacement over de foto).
+- Klik of tik op het water: daar ontstaat een plons met uitdijende rimpels die de foto vervormen. Rimpels volgen ook subtiel de cursor.
+- Waterlijn als overgang: scrollend naar beneden stijgt een waterlijn over de foto en gaat de pagina over in de volgende sectie (scroll-gestuurd, Framer Motion of GSAP ScrollTrigger).
+- Respecteer `prefers-reduced-motion`: dan een stilstaande foto zonder golven, en geen automatische beweging.
+- Hero-koptekst: sober en sterk, bijvoorbeeld "Zwembad Aarweide" met de regel "Openluchtzwembad in Nieuwveen". Primaire knop "Koop kaartjes".
+
+## Foto's
+- Foto's komen van de oude site en zijn mogelijk klein. Een schermvullende hero heeft minimaal ~1920 px breed nodig. Controleer de afmetingen en kies de scherpste foto voor de hero.
+- Verbeteren mag: bijsnijden, kleurcorrectie, lichte scherpte, ruisreductie, eventueel een AI-upscaler (dat voegt geen echte details toe, dus niet overdrijven). Combineren tot één beeld (panorama of compositie) alleen als de foto's overlappen of dezelfde hoek hebben. Geen mensen of dingen erbij verzinnen.
+- Beste oplossing op termijn: nieuwe foto's of drone-opnames bij zonnig weer als het zwembad open is.
+- Houd bestanden onder een paar MB. Gebruik `next/image` voor WebP en responsieve groottes. Geen video's in git.
 
 ## Gewenste volgende stappen
-1. Omzetten naar Next.js (App Router) + TypeScript + Tailwind, met Framer Motion voor animaties. Inhoud en teksten uit `index.html` overnemen, niets verzinnen.
-2. De duik laten meebewegen met scrollen en een watergolf als overgang tussen secties. Eén georkestreerd moment is sterker dan veel losse effecten.
-3. Echte foto's van het zwembad verwerken zodra de eigenaar ze aanlevert (nu is de hero getekend).
+1. Omzetten naar Next.js (App Router) + TypeScript + Tailwind, met Framer Motion voor scroll-animaties. Inhoud en teksten uit `index.html` overnemen, niets verzinnen.
+2. Hero met waterbeweging en plons-bij-klik bouwen (zie hierboven).
+3. Waterlijn-overgang tussen hero en de rest van de pagina.
 4. Tarieven, data en activiteiten staan op seizoen 2026 en moeten voor 2027 worden bijgewerkt. Zie `TODO` hieronder.
 5. Fotogalerij, sponsoren, stichting en vrijwilligers van de oude site nog overnemen.
 6. Toegankelijkheid (contrast, toetsenbord, `prefers-reduced-motion`) en snelheid (Lighthouse) controleren. Een Awwwards-niveau uitvoering is het streven.
 
 ## Ontwerprichting
-- Kleuren: diepblauw `#0b2c47` (inkt), poolblauw `#0f8fd6`, zonnegeel `#ffb81c` (knoppen, accent), koraal `#ff5d48` (alleen de duiker en parasols), lichte achtergrond `#f3fafd`. Donkere weergave is aanwezig.
+- Kleuren: diepblauw `#0b2c47` (inkt), poolblauw `#0f8fd6`, zonnegeel `#ffb81c` (knoppen, accent), lichte achtergrond `#f3fafd`. Donkere weergave is aanwezig. Koraal alleen als zeldzaam accent.
 - Lettertypen: Unbounded (koppen), Figtree (tekst).
-- Toon: speels en warm, geen stockfoto-gevoel. Korte, directe zinnen.
+- Toon: rustig, warm en hoogwaardig. Korte, directe zinnen. Geen stockfoto-gevoel en geen kinderachtige humor.
 - Vermijd generieke AI-looks: paarse gradients, alles gecentreerd, dezelfde kaart overal.
 
 ## Feiten (bron: oude site, seizoen 2026)
@@ -29,7 +43,7 @@ Doel: een nieuwe, opvallend mooie website voor openluchtzwembad Aarweide (Schilk
 
 ## TODO voor de eigenaar
 - Prijzen, openingstijden en activiteiten voor 2027 aanleveren.
-- Foto's aanleveren.
+- Betere foto's aanleveren als de bestaande te klein zijn.
 - Betekenis van het sterretje bij "Zondag*" en "Feestdagen*" op de oude openingstijdenpagina bevestigen.
 
 ## Werkafspraken
