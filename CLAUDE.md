@@ -5,6 +5,7 @@ Doel: een nieuwe, hoogwaardige en rustig mooie website voor openluchtzwembad Aar
 ## Huidige staat
 - Next.js (App Router) + TypeScript + Tailwind v4 + Framer Motion. Inhoud staat in `content/site.ts`.
 - `index.html` is de oude losse versie (HTML, CSS, JS), alleen nog als referentie.
+- De hero (`components/Hero.tsx`) toont `public/Turquoise gemeentelijk zwembad tussen groene bomen-2.png` met WebGL-water binnen `public/images/hero-water-mask.png`, een plons bij klik of tik en een waterlijn die bij scrollen stijgt. Stijlen staan onderaan `app/globals.css`.
 - Secties: zwemmen, openingstijden (met live status in Amsterdamse tijd), tarieven, activiteiten, nieuws, goed om te weten, contact. Deze inhoud blijft.
 
 ## Nieuwe richting hero en animatie
@@ -24,8 +25,8 @@ Doel: een nieuwe, hoogwaardige en rustig mooie website voor openluchtzwembad Aar
 
 ## Gewenste volgende stappen
 1. ~~Omzetten naar Next.js (App Router) + TypeScript + Tailwind, met Framer Motion.~~ Gedaan (branch `nextjs`).
-2. Hero met waterbeweging en plons-bij-klik bouwen (zie hierboven).
-3. Waterlijn-overgang tussen hero en de rest van de pagina.
+2. ~~Hero met waterbeweging en plons-bij-klik bouwen.~~ Gedaan.
+3. ~~Waterlijn-overgang tussen hero en de rest van de pagina.~~ Gedaan.
 4. Tarieven, data en activiteiten staan op seizoen 2026 en moeten voor 2027 worden bijgewerkt. Zie `TODO` hieronder.
 5. Fotogalerij, sponsoren, stichting en vrijwilligers van de oude site nog overnemen.
 6. Toegankelijkheid (contrast, toetsenbord, `prefers-reduced-motion`) en snelheid (Lighthouse) controleren. Een Awwwards-niveau uitvoering is het streven.
