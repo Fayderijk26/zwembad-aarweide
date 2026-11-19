@@ -1,0 +1,276 @@
+@import "tailwindcss";
+
+/*
+  Kleurtokens. Licht is de standaard; donker volgt het systeem,
+  tenzij <html data-theme="light|dark"> het overschrijft.
+*/
+:root {
+  --ink: #0b2c47;
+  --pool: #0f8fd6;
+  --pool-deep: #0a5f9c;
+  --sun: #ffb81c;
+  --coral: #ff5d48;
+
+  --bg: #f3fafd;
+  --bg-alt: #e2f3fa;
+  --surface: #ffffff;
+  --text: #0b2c47;
+  --muted: #3d5d75;
+  --line: rgba(11, 44, 71, 0.16);
+  --link: #0a5f9c;
+  --kicker: #0a5f9c;
+  --board: #0b2c47;
+  --board-text: #eaf7fd;
+  --board-muted: #9fc3d8;
+
+  /* hero-scène, gelezen door de canvas */
+  --sc-sky-top: #78c9ee;
+  --sc-sky-bot: #eaf8fd;
+  --sc-sun: #ffd24a;
+  --sc-sun-glow: rgba(255, 214, 90, 0.5);
+  --sc-lawn: #86c880;
+  --sc-lawn-dark: #5eae66;
+  --sc-tree: #3f8f55;
+  --sc-tree2: #54a766;
+  --sc-water-base: #0d639f;
+  --sc-water-top: rgba(52, 176, 232, 0.62);
+  --sc-water-bot: rgba(8, 82, 146, 0.82);
+  --sc-deck: #e9e2d3;
+  --sc-deck-edge: #fbf7ee;
+  --sc-post: #c6d1d8;
+  --sc-board: #f7fafb;
+  --sc-tile: #a9dcef;
+  --sc-foam: #ffffff;
+  --sc-outline: rgba(11, 44, 71, 0.55);
+  --sc-skin: #f0b48c;
+  --sc-skin-far: #d99a74;
+  --sc-short: #ff5d48;
+  --sc-cap: #ffb81c;
+  --sc-coral: #ff5d48;
+  --sc-yellow: #ffb81c;
+  --sc-white: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #071a2a;
+    --bg-alt: #0b2438;
+    --surface: #0f2e46;
+    --text: #e7f4fa;
+    --muted: #9bbdd1;
+    --line: rgba(231, 244, 250, 0.16);
+    --link: #7cc9f2;
+    --kicker: #7cc9f2;
+    --board: #04121f;
+    --board-text: #e7f4fa;
+    --board-muted: #8db1c6;
+    --sc-sky-top: #0b2540;
+    --sc-sky-bot: #2d6a98;
+    --sc-sun: #ffe29a;
+    --sc-sun-glow: rgba(255, 226, 154, 0.35);
+    --sc-lawn: #2f6c4b;
+    --sc-lawn-dark: #265a3f;
+    --sc-tree: #1f4d3a;
+    --sc-tree2: #285d46;
+    --sc-water-base: #06304c;
+    --sc-water-top: rgba(34, 124, 184, 0.58);
+    --sc-water-bot: rgba(4, 40, 78, 0.88);
+    --sc-deck: #56626e;
+    --sc-deck-edge: #8a97a3;
+    --sc-post: #7d8a96;
+    --sc-board: #dbe7ee;
+    --sc-tile: #2a7ba6;
+    --sc-outline: rgba(2, 12, 22, 0.7);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #071a2a;
+  --bg-alt: #0b2438;
+  --surface: #0f2e46;
+  --text: #e7f4fa;
+  --muted: #9bbdd1;
+  --line: rgba(231, 244, 250, 0.16);
+  --link: #7cc9f2;
+  --kicker: #7cc9f2;
+  --board: #04121f;
+  --board-text: #e7f4fa;
+  --board-muted: #8db1c6;
+  --sc-sky-top: #0b2540;
+  --sc-sky-bot: #2d6a98;
+  --sc-sun: #ffe29a;
+  --sc-sun-glow: rgba(255, 226, 154, 0.35);
+  --sc-lawn: #2f6c4b;
+  --sc-lawn-dark: #265a3f;
+  --sc-tree: #1f4d3a;
+  --sc-tree2: #285d46;
+  --sc-water-base: #06304c;
+  --sc-water-top: rgba(34, 124, 184, 0.58);
+  --sc-water-bot: rgba(4, 40, 78, 0.88);
+  --sc-deck: #56626e;
+  --sc-deck-edge: #8a97a3;
+  --sc-post: #7d8a96;
+  --sc-board: #dbe7ee;
+  --sc-tile: #2a7ba6;
+  --sc-outline: rgba(2, 12, 22, 0.7);
+}
+
+@theme inline {
+  --color-ink: #0b2c47;
+  --color-pool: var(--pool);
+  --color-pool-deep: var(--pool-deep);
+  --color-sun: var(--sun);
+  --color-coral: var(--coral);
+
+  --color-bg: var(--bg);
+  --color-bg-alt: var(--bg-alt);
+  --color-surface: var(--surface);
+  --color-fg: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-link: var(--link);
+  --color-kicker: var(--kicker);
+  --color-board: var(--board);
+  --color-board-fg: var(--board-text);
+  --color-board-muted: var(--board-muted);
+  --color-sky: var(--sc-sky-top);
+
+  --font-display: var(--font-unbounded), "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+  --font-sans: var(--font-figtree), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@theme {
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.375rem;
+  --text-xl: clamp(1.6rem, 3vw, 2.25rem);
+  --text-2xl: clamp(2rem, 4.6vw, 3.4rem);
+  --text-hero: clamp(2.9rem, 8vw, 5.6rem);
+  --text-lead: clamp(1.0625rem, 2vw, 1.3rem);
+  --text-amount: clamp(2.6rem, 6vw, 3.8rem);
+}
+
+/* ---------- basis ---------- */
+@layer base {
+  html {
+    scroll-padding-top: 84px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: var(--text-md);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    color: var(--link);
+    text-underline-offset: 3px;
+  }
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
+  :focus-visible {
+    outline: 3px solid var(--sun);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+}
+
+/* ---------- herbruikbare bouwstenen ---------- */
+@utility wrap {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: max(16px, 4vw);
+}
+
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  padding: 12px 22px;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+@utility btn-sun {
+  background: var(--sun);
+  color: #0b2c47;
+  box-shadow: 0 3px 0 rgba(11, 44, 71, 0.25);
+  &:hover {
+    box-shadow: 0 5px 0 rgba(11, 44, 71, 0.25);
+  }
+}
+@utility btn-line {
+  border-color: var(--text);
+  color: var(--text);
+  background: transparent;
+  &:hover {
+    background: color-mix(in srgb, var(--text) 8%, transparent);
+  }
+}
+@utility btn-sm {
+  padding: 8px 16px;
+}
+
+@utility kicker {
+  font-weight: 700;
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--kicker);
+  margin-bottom: 14px;
+}
+@utility h2 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+@utility section-pad {
+  padding-block: clamp(56px, 9vw, 112px);
+}
+
+/* Kaartje met een halve uitsparing rechts, als een echt toegangskaartje */
+@utility ticket-notch {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    background: var(--notch-bg, var(--bg));
+    border: 2px solid var(--text);
+    border-radius: 50%;
+    transform: translate(50%, -50%);
+    clip-path: inset(0 50% 0 0);
+  }
+}

@@ -3,12 +3,13 @@
 Doel: een nieuwe, opvallend mooie website voor openluchtzwembad Aarweide (Schilkerweg 21, Nieuwveen) ter vervanging van https://www.zwembadaarweide.nl/. Taal van de site: Nederlands. Doelgroep: gezinnen, zwemmers en inwoners van Nieuwveen en omgeving.
 
 ## Huidige staat
-- `index.html` is een zelfstandige eerste versie (HTML, CSS, JS, canvas). Geen build-stap.
+- Next.js (App Router) + TypeScript + Tailwind v4 + Framer Motion. Inhoud staat in `content/site.ts`, de duik in `lib/diveScene.ts`.
+- `index.html` is de oude losse eerste versie, alleen nog als referentie.
 - De hero is een canvas-scène: doorsnede van een zwembad, een duiker springt van de duikplank en maakt een bommetje met splash, rimpels en bubbels. Knop "Nog een bommetje" herhaalt de duik.
 - Secties: zwemmen, openingstijden (met live status in Amsterdamse tijd), tarieven, activiteiten, nieuws, goed om te weten, contact.
 
 ## Gewenste volgende stappen
-1. Omzetten naar Next.js (App Router) + TypeScript + Tailwind, met Framer Motion voor animaties. Inhoud en teksten uit `index.html` overnemen, niets verzinnen.
+1. ~~Omzetten naar Next.js (App Router) + TypeScript + Tailwind, met Framer Motion.~~ Gedaan (branch `nextjs`).
 2. De duik laten meebewegen met scrollen en een watergolf als overgang tussen secties. Eén georkestreerd moment is sterker dan veel losse effecten.
 3. Echte foto's van het zwembad verwerken zodra de eigenaar ze aanlevert (nu is de hero getekend).
 4. Tarieven, data en activiteiten staan op seizoen 2026 en moeten voor 2027 worden bijgewerkt. Zie `TODO` hieronder.
@@ -29,7 +30,7 @@ Doel: een nieuwe, opvallend mooie website voor openluchtzwembad Aarweide (Schilk
 
 ## TODO voor de eigenaar
 - Prijzen, openingstijden en activiteiten voor 2027 aanleveren.
-- Foto's aanleveren.
+- Foto's aanleveren. De foto's in `public/images` zijn bijna allemaal 100x75 px thumbnails (twee van 450x337): te klein voor de site. Originelen nodig.
 - Betekenis van het sterretje bij "Zondag*" en "Feestdagen*" op de oude openingstijdenpagina bevestigen.
 
 ## Werkafspraken
